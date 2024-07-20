@@ -2,6 +2,7 @@ package com.evo.Task_4_18.controller;
 
 import com.evo.Task_4_18.dto.Message;
 import com.evo.Task_4_18.repository.MessageRepository;
+import com.evo.Task_4_18.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ public class MessageController {
     @Autowired
     private MessageRepository repository;
 
+    @Autowired
+    private MessageService service;
 
     @GetMapping("/message")
     public Iterable<Message> getMessage() {
@@ -36,11 +39,7 @@ public class MessageController {
     @PutMapping("/message/{id}")
     public ResponseEntity<Message> updateMessage(@PathVariable int id, @RequestBody Message message) {
         HttpStatus status = repository.existsById(id) ? HttpStatus.OK : HttpStatus.CREATED;
-        Message temp = repository.findById(id).orElse(message);
-        temp.setText(message.getText());
-        temp.setTime(message.getTime());
-        temp.setTitle(message.getTitle());
-        return new ResponseEntity(repository.save(temp), status);
+        return new ResponseEntity(service.saveMessage(id, message), status);
     }
 
     @DeleteMapping("/message/{id}")

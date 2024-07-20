@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,16 @@ import java.util.List;
 public class PersonService {
     @Autowired
     PersonRepository repository;
+
+    public Person savePerson(int id, Person person) {
+        Person temp = repository.findById(id).orElse(person);
+        temp.setFirstname(person.getFirstname());
+        temp.setSurname(person.getSurname());
+        temp.setLastname(person.getLastname());
+        temp.setBirthday(person.getBirthday());
+        repository.save(temp);
+        return temp;
+    }
 
     public ResponseEntity<Person> addMeesageToPerson(int personId, Message message) {
         if (!repository.existsById(personId)) {
